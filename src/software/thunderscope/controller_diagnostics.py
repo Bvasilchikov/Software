@@ -1,5 +1,6 @@
 from proto.import_all_protos import *
 from software.thunderscope.constants import *
+import software.python_bindings as tbots
 
 from xbox360controller import Xbox360Controller
 
@@ -26,6 +27,8 @@ class ControllerDiagnostics(object):
         self.proto_unix_io = proto_unix_io
         self.auto_kick_enabled = False
 
+        self.constants = tbots.create2021RobotConstants()
+
     def __on_left_axis_moved(self, axis):
         x = axis.x if abs(axis.x) > AXIS_DEAD_ZONE_THRESHOLD else 0
         y = axis.y if abs(axis.y) > AXIS_DEAD_ZONE_THRESHOLD else 0
@@ -43,12 +46,14 @@ class ControllerDiagnostics(object):
         print(self.motor_control)
 
     def __on_right_trigger_moved(self, axis):
-        self.motor_control.dribbler_speed_rpm = int(axis.value * MAX_DRIBBLER_RPM)
+        multiplier = axis.value if abs(axis.value) > AXIS_DEAD_ZONE_THRESHOLD else 0
+        self.motor_control.dribbler_speed_rpm = int(multiplier * self.constants.indefinite_dribbler_speed_rpm)
         self.proto_unix_io.send_proto(MotorControl, self.motor_control)
         print(self.motor_control)
 
     def __on_left_trigger_moved(self, axis):
-        self.motor_control.dribbler_speed_rpm = int(-axis.value * MAX_DRIBBLER_RPM)
+        multiplier = axis.value if abs(axis.value) > AXIS_DEAD_ZONE_THRESHOLD else 0
+        self.motor_control.dribbler_speed_rpm = int(-multiplier * self.constants.indefinite_dribbler_speed_rpm)
         self.proto_unix_io.send_proto(MotorControl, self.motor_control)
         print(self.motor_control)
 
