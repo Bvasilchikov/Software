@@ -11,6 +11,7 @@ import software.python_bindings as cpp_bindings
 from software.py_constants import *
 from software.thunderscope.robot_communication import RobotCommunication
 from software.thunderscope.replay.proto_logger import ProtoLogger
+from software.thunderscope.controller_diagnostics import ControllerDiagnostics
 
 NUM_ROBOTS = 6
 SIM_TICK_RATE_MS = 16
@@ -161,6 +162,12 @@ if __name__ == "__main__":
         help="Disables checking for estop plugged in (ONLY USE FOR LOCAL TESTING)",
     )
 
+    parser.add_argument(
+        "--xbox",
+        action="store_true",
+        help="Run robot diagnostics with an Xbox controller",
+    )
+
     # Sanity check that an interface was provided
     args = parser.parse_args()
 
@@ -250,6 +257,9 @@ if __name__ == "__main__":
             runtime_dir = args.yellow_full_system_runtime_dir
             friendly_colour_yellow = True
             debug = args.debug_yellow_full_system
+
+        if args.xbox:
+            controller_diagnostics = ControllerDiagnostics(proto_unix_io)
 
         # this proto will be the same as the fullsystem one if fullsystem is enabled
         if args.run_diagnostics:
