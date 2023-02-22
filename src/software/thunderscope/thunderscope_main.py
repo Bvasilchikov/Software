@@ -258,12 +258,13 @@ if __name__ == "__main__":
             friendly_colour_yellow = True
             debug = args.debug_yellow_full_system
 
-        if args.xbox:
-            controller_diagnostics = ControllerDiagnostics(proto_unix_io)
 
         # this proto will be the same as the fullsystem one if fullsystem is enabled
         if args.run_diagnostics:
             current_proto_unix_io = tscope.robot_diagnostics_proto_unix_io
+
+        if args.xbox:
+            controller_diagnostics = ControllerDiagnostics(current_proto_unix_io)
 
         with RobotCommunication(
             current_proto_unix_io,
