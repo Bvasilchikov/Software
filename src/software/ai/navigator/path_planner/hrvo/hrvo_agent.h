@@ -12,7 +12,6 @@
 #include "software/ai/navigator/path_planner/hrvo/lv_agent.h"
 #include "software/ai/navigator/path_planner/hrvo/velocity_obstacle.h"
 #include "software/ai/navigator/path_planner/hrvo/robot_path.h"
-#include "software/time/duration.h"
 #include "software/geom/vector.h"
 #include "software/geom/algorithms/intersection.h"
 #include "software/world/robot_state.h"
@@ -45,16 +44,15 @@ public:
               double radius, double max_speed, double max_accel, double max_radius_inflation);
 
 
-    // check double -> Duration conversion
     void updatePrimitive(const TbotsProto::Primitive &new_primitive,
-                         const World &world, Duration time_step) override;
+                         const World &world, double time_step) override;
 
 
     /**
      * Computes the new velocity of this agent.
      * @param agents a map of offset robot ids to agents
      */
-    void computeNewVelocity(std::map<unsigned int, std::shared_ptr<Agent>> &robots, Duration time_step) override;
+    void computeNewVelocity(std::map<unsigned int, std::shared_ptr<Agent>> &robots, double time_step) override;
 
     /**
      * Computes the preferred velocity of this agent.
@@ -63,7 +61,7 @@ public:
      *
      * updates pref_velocity
      */
-    Vector computePreferredVelocity(Duration time_step) override;
+    Vector computePreferredVelocity(double time_step) override;
 
     /**
      * Compute all the velocity obstacles that this Agent should take into account and

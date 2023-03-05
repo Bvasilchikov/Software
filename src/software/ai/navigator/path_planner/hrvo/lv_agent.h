@@ -30,7 +30,7 @@ public:
      * Computes the new velocity of this agent.
      * @param agents is unused
      */
-    void computeNewVelocity(std::map<unsigned int, std::shared_ptr<Agent>> &robots, Duration time_step) override;
+    void computeNewVelocity(std::map<unsigned int, std::shared_ptr<Agent>> &robots, double time_step) override;
 
     /**
      * Create the velocity obstacle which other_agent should see for this Agent
@@ -40,10 +40,10 @@ public:
      */
     VelocityObstacle createVelocityObstacle(const Agent &other_agent) override;
 
-    Vector computePreferredVelocity(Duration time_step) override;
+    Vector computePreferredVelocity(double time_step) override;
 
     void updatePrimitive(const TbotsProto::Primitive &new_primitive,
                                  const World &world,
-                                 Duration time_step) override;
+                                 double time_step) override;
 
 };

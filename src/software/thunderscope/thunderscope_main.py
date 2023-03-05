@@ -330,7 +330,7 @@ if __name__ == "__main__":
             """
             world_state = tbots_protobuf.create_world_state(
                 blue_robot_locations=[
-                    cpp_bindings.Point(-3, y) for y in numpy.linspace(-2, 2, NUM_ROBOTS)
+                    cpp_bindings.Point(-y, y) for y in numpy.linspace(-2, 2, NUM_ROBOTS)
                 ],
                 yellow_robot_locations=[
                     cpp_bindings.Point(3, y) for y in numpy.linspace(-2, 2, NUM_ROBOTS)

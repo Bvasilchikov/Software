@@ -11,25 +11,38 @@ Agent::Agent(RobotId robot_id, RobotState robot_state, TeamSide side,
         min_radius(radius),
         max_speed(max_speed),
         max_accel(max_accel),
-        max_radius_inflation(max_radius_inflation) {
+        max_radius_inflation(max_radius_inflation),
+        new_velocity() {
 
 }
 
-void Agent::update(Duration time_step) {
+void Agent::update(double time_step) {
+//    LOG(INFO) << "new velocity";
+    LOG(WARNING) << "before normalization " << new_velocity;
+//    new_velocity = Vector(1,1);
+//    return;
     if (new_velocity.length() >= max_speed) {
         // New velocity can not be greater than max speed
         new_velocity = new_velocity.normalize(max_speed);
     }
 
     const Vector dv = new_velocity - robot_state.velocity();
-    if (dv.length() < max_accel * time_step.toMilliseconds() || dv.length() == 0.0) {
-        robot_state.velocity() = new_velocity;
+    if (dv.length() < (max_accel * time_step) || dv.length() == 0.0) {
+        LOG(WARNING) << "updating old vel from " << robot_state.velocity() << " to " << new_velocity;
+//        robot_state.velocity().set(new_velocity.x(), new_velocity.y());
+        robot_state = RobotState(robot_state.position(), new_velocity, robot_state.orientation(), robot_state.angularVelocity());
+        LOG(WARNING) << "updated " << robot_state.velocity();
+
+
     } else {
         // Calculate the maximum velocity towards the preferred velocity, given the
         // acceleration constraint
-        robot_state.velocity() = robot_state.velocity() + (max_accel * time_step.toMilliseconds()) * (dv / dv.length());
+        LOG(WARNING) << "wow" << robot_state.velocity() << " to " <<  robot_state.velocity() + (max_accel * time_step) * (dv / dv.length());
+//        robot_state.velocity() = robot_state.velocity() + ((max_accel * time_step) * (dv / dv.length()));
+        robot_state = RobotState(robot_state.position(),  robot_state.velocity() + (max_accel * time_step) * (dv / dv.length()), robot_state.orientation(), robot_state.angularVelocity());
+
     }
-    robot_state.position() = robot_state.position() + (robot_state.velocity() * time_step.toMilliseconds());
+    robot_state.position() = robot_state.position() + (robot_state.velocity() * time_step);
 
     Point current_dest;
 
@@ -66,7 +79,7 @@ double Agent::getRadius() const {
     return radius;
 }
 
-RobotState Agent::getRobotState() {
+RobotState Agent::getRobotState() const {
     return robot_state;
 }
 

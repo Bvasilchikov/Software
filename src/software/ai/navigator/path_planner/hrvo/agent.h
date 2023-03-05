@@ -5,7 +5,6 @@
 #include "software/ai/navigator/path_planner/hrvo/robot_path.h"
 #include "software/ai/navigator/path_planner/hrvo/velocity_obstacle.h"
 #include "software/geom/vector.h"
-#include "software/time/duration.h"
 #include "software/world/world.h"
 #include "proto/primitive.pb.h"
 
@@ -25,17 +24,17 @@ public:
      * updates the agents path and current state based
      * @param time_step
      */
-    void update(Duration time_step);
+    void update(double time_step);
 
-    virtual Vector computePreferredVelocity(Duration time_step) = 0;
+    virtual Vector computePreferredVelocity(double time_step) = 0;
 
-    virtual void computeNewVelocity(std::map<unsigned int, std::shared_ptr<Agent>> &robots, Duration time_step) = 0;
+    virtual void computeNewVelocity(std::map<unsigned int, std::shared_ptr<Agent>> &robots, double time_step) = 0;
 
     virtual VelocityObstacle createVelocityObstacle(const Agent &other_agent) = 0;
 
     virtual void updatePrimitive(const TbotsProto::Primitive &new_primitive,
                                  const World &world,
-                                 Duration time_step) = 0;
+                                 double time_step) = 0;
 
 
     // GETTERS
@@ -45,7 +44,7 @@ public:
      *
      * @return The state of the agent
      */
-    RobotState getRobotState();
+    RobotState getRobotState() const;
 
     Vector getPreferredVelocity() const;
 
@@ -96,6 +95,7 @@ public:
 
     const double max_radius_inflation;
 
+    Vector velocity;
     Vector new_velocity;
 
 protected:

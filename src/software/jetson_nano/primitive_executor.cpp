@@ -59,6 +59,8 @@ void PrimitiveExecutor::updateVelocity(const Vector &local_velocity,
 Vector PrimitiveExecutor::getTargetLinearVelocity()
 {
     Vector target_global_velocity = hrvo_simulator_.getRobotVelocity(robot_id_);
+    LOG(INFO) << "target out velocity: " << target_global_velocity;
+//    LOG(INFO) << time_step_;
     return globalToLocalVelocity(target_global_velocity, curr_orientation_);
 }
 

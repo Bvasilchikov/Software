@@ -97,7 +97,7 @@ private:
     // The colour of the friendly team
     const TeamColour friendly_team_colour;
     // simulator time step
-    Duration time_step;
+    double time_step;
 
     // The max amount (meters) which the friendly/enemy robot radius can increase by.
     // This scale is used to avoid close encounters, and reduce chance of collision.
