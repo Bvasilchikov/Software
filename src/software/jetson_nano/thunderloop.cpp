@@ -110,6 +110,7 @@ Thunderloop::~Thunderloop() {}
     struct timespec next_shot;
     struct timespec poll_time;
     struct timespec iteration_time;
+    struct timespec total_iteration_time;
     struct timespec last_primitive_received_time;
     struct timespec last_world_received_time;
     struct timespec current_time;
@@ -139,6 +140,7 @@ Thunderloop::~Thunderloop() {}
     for (;;)
     {
         {
+            ScopedTimespecTimer total_iteration_timer(&total_iteration_time);
             // Wait until next shot
             //
             // Note: CLOCK_MONOTONIC is used over CLOCK_REALTIME since
@@ -328,8 +330,9 @@ Thunderloop::~Thunderloop() {}
         }
 
         auto loop_duration_ns = getNanoseconds(iteration_time);
-        thunderloop_status_.set_iteration_time_ms(loop_duration_ns /
-                                                  NANOSECONDS_PER_MILLISECOND);
+        auto loop_duration_ms = loop_duration_ns / NANOSECONDS_PER_MILLISECOND;
+        auto total_loop_duration_ms = getMilliseconds(total_iteration_time);
+        auto frequency = 1.0 / (total_loop_duration_ms / SECONDS_PER_MILLISECOND);
 
         // Make sure the iteration can fit inside the period of the loop
         loop_duration_seconds =
@@ -338,6 +341,13 @@ Thunderloop::~Thunderloop() {}
         // Calculate next shot taking into account how long this iteration took
         next_shot.tv_nsec += interval - static_cast<long int>(loop_duration_ns);
         timespecNorm(next_shot);
+
+
+        LOG(PLOTJUGGLER) << *createPlotJugglerValue({
+            {"loop_duration_no_sleep", (loop_duration_ms)},
+            {"total_loop_duration", total_loop_duration_ms},
+            {"frequency", frequency}
+        });
     }
 }
 
