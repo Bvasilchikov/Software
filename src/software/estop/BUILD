@@ -9,11 +9,22 @@ load(
     "platformio_project",
 )
 
-# bazel run //software/emergency_stop:main to flash the estop
+# bazel run //software/emergency_stop:main_micro to flash the estop
 platformio_project(
-    name = "main",
+    name = "main_micro",
     src = "main.cc",
     board = "micro",
+    framework = "arduino",
+    deps = [
+        "//shared:constants_platformio",
+    ],
+)
+
+# bazel run //software/emergency_stop:main_nano to flash the estop
+platformio_project(
+    name = "main_nano",
+    src = "main.cc",
+    board = "nanoatmega328",
     framework = "arduino",
     deps = [
         "//shared:constants_platformio",
