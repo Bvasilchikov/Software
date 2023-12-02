@@ -1,31 +1,56 @@
-
 #include "software/ai/hl/stp/play/play_monitor.h"
-#include "software/geom/point.h"
+#include "software/geom/algorithms/distance.h"
 
-PlayMoitor::PlayMoitor()
+PlayMonitor::PlayMonitor(const PlayIntent& initialIntent)
+    : intent(initialIntent), world()
 {
 }
 
-double PlayMoitor::calculateIntentBallScore()
+void PlayMonitor::startMonitoring(const World& initialWorld,
+                                  PlayIntent initialIntent)
 {
-    Point startPos             = intent.startWorld.getBallPosition();
-    double distBetweenStartEnd = distanceBetween(world.ball_position, intent.position);
-    double distToDest          = distanceBetween(world.ball_position, intent.position);
+    world  = initialWorld;
+    intent = initialIntent;
+}
+
+double PlayMonitor::endMonitoring()
+{
+    return 0.0;
+}
+
+void PlayMonitor::updateWorld(const World& newWorld)
+{
+    world = newWorld;
+}
+
+void PlayMonitor::updatePlayIntent(const PlayIntent& newIntent)
+{
+    intent = newIntent;
+}
+
+double PlayMonitor::calculateIntentBallScore()
+{
+    const double distBetweenStartEnd = distance(world.ball().position(),
+                                                intent.getBallDestination());
+    const double distToDest = distance(world.ball().position(),
+                                       intent.getBallDestination());
     return distToDest / distBetweenStartEnd;
 }
 
-double PlayMoitor::calculateIntentActionScore()
+double PlayMonitor::calculateIntentActionScore()
 {
-    double ballScore = calculateIntentBallScore();
-    switch (intent.type)
+    double ballScore = this->calculateIntentBallScore();
+    switch (intent)
     {
         case PASS:
-            return ballScore;
         case SHOT:
-            return 1.0;
-            ifscored, ballScore;
-            otherwise;
+            return ballScore;
+            return ballScore;
         case DRIBBLE:
-            return ballScore * robotMovedToPosition(intent.postion);
+            return ballScore * robotAtPosition(intent.postion);
+            // TODO add dribbler id to intent
+
+        default:
+            return 0.0;
     }
 }
