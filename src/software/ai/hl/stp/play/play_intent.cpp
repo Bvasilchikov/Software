@@ -1,9 +1,9 @@
 #include "play_intent.h"
 
 
-PlayIntent::PlayIntent(IntentType play_intent_type, const Point& ball_destination)
+PlayIntent::PlayIntent(IntentType play_intent_type, const World &world)
     : intent(play_intent_type),
-      ball_destination(ball_destination)
+      world(world)
 {
 }
 
