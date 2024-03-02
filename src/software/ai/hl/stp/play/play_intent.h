@@ -7,6 +7,7 @@ enum IntentType
     PASS = 0,
     SHOT = 1,
     DRIBBLE = 2
+    // TODO: useless
 };
 
 class PlayIntent
@@ -20,7 +21,7 @@ public:
 
 private:
     const IntentType intent;
-    const World& world;
+    const World& world; // TODO:  rename to initial_world
 };
 
 

@@ -95,7 +95,7 @@ double PlayMonitor::calculateCurrentPlayScore(const World & finalWorld)
         return -1.0;
     }
     if (attackingTeam == TeamPossession::ENEMY_TEAM &&
-    contains(world.field().enemyHalf(), world.ball().position()))
+    contains(world.field().friendlyHalf(), world.ball().position()))
     {
         return -1.0;
     }
